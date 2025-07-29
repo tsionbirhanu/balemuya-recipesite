@@ -17,7 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "@/components/shared/Navbar";
-import type { Recipe } from "../../../types/recipe";
+import type { Recipe } from "@/types/recipe";
 
 export default function BrowseRecipesPage() {
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function BrowseRecipesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>(
+  const [categories, setCategories] = useState<{ id: string; name: string; imageUrl?: string }[]>(
     []
   );
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ export default function BrowseRecipesPage() {
         if (!res.ok) throw new Error("Failed to fetch categories");
         const data = await res.json();
         setCategories(data);
-      } catch (err) {
+      } catch {
         setCategories([]);
       }
     }
@@ -75,9 +75,9 @@ export default function BrowseRecipesPage() {
         if (!res.ok) throw new Error("Failed to fetch recipes");
         const data: Recipe[] = await res.json();
         setRecipes(data);
-      } catch (err: any) {
+      } catch (err) {
         setError(
-          err.message || "Something went wrong. Please try again later."
+          err instanceof Error ? err.message : "Something went wrong. Please try again later."
         );
         setRecipes([]);
       } finally {
@@ -88,10 +88,7 @@ export default function BrowseRecipesPage() {
     fetchRecipes();
   }, [searchParams]);
 
-  useEffect(() => {
-    // Debug: see what recipes are fetched
-    console.log("Fetched recipes:", recipes);
-  }, [recipes]);
+
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -197,15 +194,15 @@ export default function BrowseRecipesPage() {
               <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
                 <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden h-full">
                   <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={recipe.imageUrl || "/placeholder.svg"}
-                      alt={recipe.title}
-                      width={400} // Add explicit width
-                      height={300} // Add explicit height
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      priority
-                      unoptimized={process.env.NODE_ENV !== "production"} // Disable optimization in development
-                    />
+                   <Image
+  src={recipe.imageUrl?.trim() || "/placeholder.svg"} // Trim whitespace
+  alt={recipe.title}
+  width={400}
+  height={300}
+  className="object-cover group-hover:scale-105 transition-transform duration-300"
+  priority
+  unoptimized={process.env.NODE_ENV !== "production"}
+/>
                   </div>
                   <CardContent className="p-4 flex-1 flex flex-col">
                     <div className="flex-1">
@@ -215,8 +212,8 @@ export default function BrowseRecipesPage() {
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-500 mt-2">
                       <Badge variant="outline" className="w-fit">
-                        {recipe.category?.name || "Uncategorized"}
-                      </Badge>
+                     {recipe.category?.name || "Uncategorized"}
+                     </Badge>
                     </div>
                   </CardContent>
                 </Card>

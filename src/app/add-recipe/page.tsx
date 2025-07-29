@@ -6,11 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Plus, X, Upload, ImageIcon } from "lucide-react"
+import { Plus, X } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import error from "next/error"
 
 export default function AddRecipePage() {
   const router = useRouter()
@@ -108,7 +107,7 @@ export default function AddRecipePage() {
         throw new Error(errorData.error || "Failed to submit recipe")
       }
 
-      const data = await response.json()
+      await response.json()
       toast.success("Recipe submitted successfully!")
       router.push("/recipes")
     } catch (error) {
@@ -270,9 +269,7 @@ export default function AddRecipePage() {
             </CardContent>
           </Card>
 
-          {error && (
-            <div className="text-red-600 text-center">{error}</div>
-          )}
+
 
           <div className="flex justify-center">
             <Button 

@@ -61,8 +61,7 @@ export default function RegisterPage() {
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
       
-      toast.success('Account created successfully! Redirecting...');
-      console.log(data.token); //jwt token 
+      toast.success('Account created successfully! Redirecting...'); 
       
       // Redirect to login after 2 seconds
       setTimeout(() => {

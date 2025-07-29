@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Star, Clock, Heart, Share2, ChevronRight } from "lucide-react";
+import { Star, Heart, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Navbar from "@/components/shared/Navbar";
 import type { RecipeDetail } from "@/types/recipe";
@@ -40,6 +40,27 @@ export default function RecipeDetailPage() {
   const [expandedInstructions, setExpandedInstructions] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState("ingredients");
 
+  const checkFavoriteStatus = useCallback(async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+  
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favourite`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (response.ok) {
+        const favorites = await response.json();
+        setIsFavorite(favorites.some((fav: { recipeId: string }) => fav.recipeId === params.id));
+      }
+    } catch (error) {
+      console.error('Failed to check favorites', error);
+    }
+  }, [params.id]);
+
   useEffect(() => {
     if (!params?.id) return;
 
@@ -67,28 +88,7 @@ export default function RecipeDetailPage() {
 
     fetchData();
     checkFavoriteStatus();
-  }, [params?.id]);
-
-  const checkFavoriteStatus = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-  
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/favourite`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-  
-      if (response.ok) {
-        const favorites = await response.json();
-        setIsFavorite(favorites.some((fav: any) => fav.recipeId === params.id));
-      }
-    } catch (error) {
-      console.error('Failed to check favorites', error);
-    }
-  };
+  }, [params?.id, checkFavoriteStatus]);
   
   const handleFavorite = async () => {
     const token = localStorage.getItem('token');
@@ -182,21 +182,7 @@ export default function RecipeDetailPage() {
     );
   };
 
-  const shareRecipe = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: recipe?.title,
-        text: `Check out this delicious recipe: ${recipe?.title}`,
-        url: window.location.href,
-      }).catch(() => {
-        navigator.clipboard.writeText(window.location.href);
-        toast.success("Link copied to clipboard!");
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast.success("Link copied to clipboard!");
-    }
-  };
+
 
   const adjustIngredientAmount = (
     quantity: number,
@@ -241,7 +227,6 @@ export default function RecipeDetailPage() {
               <h1 className="text-4xl font-bold mb-2 drop-shadow-lg">{recipe.title}</h1>
               <div className="flex items-center space-x-4 text-sm">
                 <div className="flex items-center bg-black/30 px-2 py-1 rounded-full">
-                  <Clock className="h-4 w-4 mr-1" />
                   <span>{new Date(recipe.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>
@@ -272,20 +257,6 @@ export default function RecipeDetailPage() {
                 </Tooltip>
               </TooltipProvider>
               
-              {/* <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button 
-                      size="icon" 
-                      className="bg-white/10 hover:bg-white/20 backdrop-blur-sm"
-                      onClick={shareRecipe}
-                    >
-                      <Share2 className="h-5 w-5 text-white" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Share recipe</TooltipContent>
-                </Tooltip>
-              </TooltipProvider> */}
             </div>
           </div>
         </div>

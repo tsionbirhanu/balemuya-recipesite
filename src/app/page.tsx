@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Clock, ArrowRight } from "lucide-react"
+import { Star, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import Navbar from "@/components/shared/Navbar"
@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export default function HomePage() {
-  const [categories, setCategories] = useState<{ id: number; name: string }[]>([])
+  const [categories, setCategories] = useState<{ id: number; name: string; imageUrl?: string }[]>([])
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
 
@@ -35,7 +35,7 @@ export default function HomePage() {
     fetchCategories()
   }, [])
 
-  const handleAddRecipeClick = (e: React.MouseEvent) => {
+  const handleAddRecipeClick = () => {
     if (!isLoggedIn) {
       toast.error('Please login to add recipes')
       router.push('/auth/login')
@@ -49,36 +49,28 @@ export default function HomePage() {
 
   const featuredRecipes = [
     {
-      title: "Traditional Doro Wat",
-      image: "/dorowot.jpg?height=250&width=400",
-      rating: 4.8,
-      time: "2h 30min",
-      difficulty: "Medium",
-      description: "Rich and flavorful chicken stew with berbere spice",
+      title: "Pasta Primavera",
+      image: "/pasta.jpeg?height=250&width=400",
+      rating: 4.3,
+      description: "A rich meat sauce served over spaghetti pasta — savory, saucy, and comforting.",
     },
     {
-      title: "Authentic Injera",
-      image: "/injera.jpg?height=250&width=400",
+      title:"Baklava", 
+      image: "/dessert.jpeg?height=250&width=400",
       rating: 4.9,
-      time: "3 days",
-      difficulty: "Hard",
-      description: "Traditional sourdough flatbread, the heart of Ethiopian cuisine",
+      description: "A rich, flaky pastry made with layers of filo dough, chopped nuts, and sweet honey syrup.",
     },
     {
-      title: "Spicy Kitfo",
-      image: "/kitfo.jpg?height=250&width=400",
+      title: "Sushi",
+      image: "/sushi.jpeg?height=250&width=400",
       rating: 4.7,
-      time: "20min",
-      difficulty: "Easy",
-      description: "Ethiopian steak tartare with mitmita spice blend",
+      description: "Delicately rolled vinegared rice with fish, vegetables, and seaweed — elegant and healthy.",
     },
     {
-      title: "Vegetarian Shiro",
-      image: "/shiro.jpg?height=250&width=400",
-      rating: 4.6,
-      time: "45min",
-      difficulty: "Easy",
-      description: "Creamy chickpea stew perfect for fasting days",
+      title: "Traditional Doro Wat",
+      image: "/dorowot.jpeg?height=250&width=400",
+      rating: 4.8,
+      description: "Ethiopia’s national dish a spicy chicken stew with berbere, onions, and hard-boiled eggs.",
     },
   ]
 
@@ -128,9 +120,16 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {categories.map((category) => (
-  <Link key={category.id} href={`/recipes?category=${category.name.toLowerCase()}`}>
-    <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
-      <div className="relative h-48 overflow-hidden">
+         <Link 
+            key={category.id} 
+            href={{
+             pathname: '/recipes',
+              query: { category: category.name } // Use original case name
+            }}
+           passHref
+            >
+        <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
+        <div className="relative h-48 overflow-hidden">
         <Image
           src={category.imageUrl || `/category-images/${category.name.toLowerCase()}.jpg`}
           alt={category.name}
@@ -178,13 +177,6 @@ export default function HomePage() {
                     <h3 className="font-bold text-lg mb-2 text-gray-800">{recipe.title}</h3>
                     <p className="text-gray-600 text-sm mb-3">{recipe.description}</p>
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                      <div className="flex items-center">
-                        <Clock className="h-4 w-4 mr-1" />
-                        {recipe.time}
-                      </div>
-                      <Badge variant="secondary" className="bg-orange-100 text-orange-700">
-                        {recipe.difficulty}
-                      </Badge>
                     </div>
                   </CardContent>
                 </Card>

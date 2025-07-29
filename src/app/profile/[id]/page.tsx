@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Mail, Edit3, Save, X, Heart, Shield } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { toast } from "sonner"
 import Navbar from "@/components/shared/Navbar"
 import Footer from "@/components/shared/Footer"
@@ -33,13 +33,14 @@ interface UserProfile {
   favorites?: Favorite[]
 }
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
+export default function ProfilePage() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [editName, setEditName] = useState("")
   const router = useRouter()
+  const params = useParams()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,9 +67,9 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         if (userData) {
           setCurrentUser(JSON.parse(userData))
         }
-      } catch (error) {
-        toast.error("Failed to load profile")
-      } finally {
+          } catch {
+      toast.error("Failed to load profile")
+    } finally {
         setIsLoading(false)
       }
     }

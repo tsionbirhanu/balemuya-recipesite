@@ -18,11 +18,3 @@ export interface Recipe {
     favorites?: Favorite[]
   }
 
-  // For better type safety, consider updating your interfaces:
-interface User {
-  id: number
-  name: string
-  email: string
-  role: 'admin' | 'user' // or whatever roles you have
-  // isAdmin?: boolean // remove if not used
-}

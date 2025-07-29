@@ -1,7 +1,6 @@
 
-
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -11,16 +10,27 @@ import { Check, X, Clock, Shield, Loader2, Home } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
-
 interface RecipeRequest {
   id: number
   title: string
   imageUrl?: string | null
-  instructions: string[]
-  ingredients: { name: string; unit?: string; amount?: string }[]
+  instructions: string[] | string
+  ingredients: Array<{
+    name?: string
+    ingredient?: string
+    unit?: string
+    amount?: string | number
+    quantity?: string | number
+    note?: string
+  }>
   status: 'PENDING' | 'APPROVED' | 'REJECTED'
-  user: { name: string; email: string }
+  user?: {
+    name?: string
+    email?: string
+  }
+  userId: number
   createdAt: string
+  featured: boolean
 }
 
 export default function AdminPage() {
@@ -28,48 +38,10 @@ export default function AdminPage() {
   const [authState, setAuthState] = useState<'checking' | 'authenticated' | 'unauthorized'>('checking')
   const router = useRouter()
 
-  useEffect(() => {
-    console.log("[1] Component mounted - starting auth check")
-    verifyAdmin()
-  }, [])
 
-  const verifyAdmin = async () => {
+
+  const fetchRequests = useCallback(async (token: string) => {
     try {
-      console.log("[2] Starting admin verification")
-      
-      const userData = localStorage.getItem('user')
-      const token = localStorage.getItem('token')
-      
-      console.log("[3] Retrieved from localStorage:", { userData, tokenExists: !!token })
-
-      if (!userData || !token) {
-        console.warn("[4] Missing auth data - redirecting")
-        throw new Error('Authentication required')
-      }
-
-      const user = JSON.parse(userData)
-      console.log("[5] Parsed user data:", user)
-
-      if (user?.role !== 'admin') {
-        console.warn("[6] User is not admin - redirecting")
-        throw new Error('Admin privileges required')
-      }
-
-      console.log("[7] Admin verified - proceeding")
-      setAuthState('authenticated')
-      await fetchRequests(token)
-    } catch (error) {
-      console.error("[8] Verification failed:", error)
-      setAuthState('unauthorized')
-      toast.error(error instanceof Error ? error.message : 'Access denied')
-      router.push('/')
-    }
-  }
-
-  const fetchRequests = async (token: string) => {
-    try {
-      console.log("[9] Fetching pending recipes with token:", token.slice(0, 10) + "...")
-      
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/recipe_request`, {
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -78,29 +50,72 @@ export default function AdminPage() {
         cache: 'no-store'
       })
 
-      console.log("[10] Response status:", res.status)
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}))
-        console.error("[11] API Error:", errorData)
         throw new Error(errorData.error || 'Failed to fetch requests')
       }
 
       const data = await res.json()
-      console.log("[12] Received data count:", data.length)
-      setRequests(data.filter((r: RecipeRequest) => r.status === 'PENDING'))
+      
+      const pendingRequests = data
+        .filter((r: RecipeRequest) => r.status === 'PENDING')
+        .map((request: RecipeRequest) => ({
+          ...request,
+          user: request.user || { name: 'Unknown', email: '' },
+          instructions: Array.isArray(request.instructions) 
+            ? request.instructions 
+            : [request.instructions || 'No instructions provided'],
+          ingredients: request.ingredients.map((ing) => ({
+            name: ing.name || ing.ingredient || 'Unknown ingredient',
+            unit: ing.unit || '',
+            amount: ing.amount || ing.quantity || '',
+            note: ing.note || ''
+          }))
+        }))
+
+      setRequests(pendingRequests)
     } catch (error) {
-      console.error("[13] Fetch error:", error)
+      console.error("Fetch error:", error)
       toast.error("Failed to load requests")
     }
-  }
+  }, [])
+
+  const verifyAdmin = useCallback(async () => {
+    try {
+      const userData = localStorage.getItem('user')
+      const token = localStorage.getItem('token')
+      
+      if (!userData || !token) {
+        throw new Error('Authentication required')
+      }
+
+      const user = JSON.parse(userData)
+      if (user?.role !== 'admin') {
+        throw new Error('Admin privileges required')
+      }
+
+      setAuthState('authenticated')
+      await fetchRequests(token)
+    } catch (error) {
+      console.error("Verification failed:", error)
+      setAuthState('unauthorized')
+      toast.error(error instanceof Error ? error.message : 'Access denied')
+      router.push('/')
+    }
+  }, [router, fetchRequests])
+
+  useEffect(() => {
+    verifyAdmin()
+  }, [verifyAdmin])
+
+
 
   const handleDecision = async (id: number, status: 'APPROVED' | 'REJECTED') => {
     try {
       const token = localStorage.getItem('token')
       if (!token) throw new Error('Authentication required')
 
-      let body: any = { status }
+      const body: { status: string; categoryId?: number } = { status }
 
       if (status === 'APPROVED') {
         const categoryId = prompt("Enter category ID:")
@@ -224,7 +239,7 @@ export default function AdminPage() {
                   <div>
                     <h3 className="text-lg font-bold">{request.title}</h3>
                     <div className="text-sm text-gray-600 space-y-1 mt-1">
-                      <p>Submitted by: {request.user.name} ({request.user.email})</p>
+                      <p>Submitted by: {request.user?.name || 'Unknown'} ({request.user?.email || 'No email'})</p>
                       <p>Date: {new Date(request.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
