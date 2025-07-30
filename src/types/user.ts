@@ -1,4 +1,4 @@
-// 
+
 // types/user.ts
 export interface Recipe {
     id: string

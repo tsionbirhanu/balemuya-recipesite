@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Mail, Edit3, Save, X, Heart, Shield } from "lucide-react"
+import { Mail, Save, X, Heart, Shield } from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
 import { toast } from "sonner"
 import Navbar from "@/components/shared/Navbar"
@@ -185,7 +185,7 @@ export default function ProfilePage() {
                       <span>{user.email}</span>
                     </div>
 
-                    {isOwnProfile && (
+                    {/* {isOwnProfile && (
                       <Button 
                         variant="outline" 
                         onClick={() => setIsEditing(true)}
@@ -193,7 +193,7 @@ export default function ProfilePage() {
                       >
                         <Edit3 className="h-4 w-4 mr-2" /> Edit Name
                       </Button>
-                    )}
+                    )} */}
 
                     {/* Admin Quick Actions */}
                     {isCurrentUserAdmin && !isOwnProfile && (

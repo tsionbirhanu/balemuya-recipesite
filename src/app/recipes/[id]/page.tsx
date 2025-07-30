@@ -206,8 +206,6 @@ export default function RecipeDetailPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
       <Navbar />
-      
-      {/* Hero Section */}
       <div className="relative h-96 overflow-hidden group">
         <Image 
           src={recipe.imageUrl || "/placeholder.svg"} 

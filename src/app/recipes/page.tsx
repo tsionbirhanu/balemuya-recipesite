@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {  Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,9 +24,9 @@ export default function BrowseRecipesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [categories, setCategories] = useState<{ id: string; name: string; imageUrl?: string }[]>(
-    []
-  );
+  const [categories, setCategories] = useState<
+    { id: string; name: string; imageUrl?: string }[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,8 +54,6 @@ export default function BrowseRecipesPage() {
     fetchCategories();
   }, []);
 
-  // Set selectedCategory from URL if present
-  // Combine into one effect
   useEffect(() => {
     const urlCategory = searchParams.get("category") || "all";
     setSelectedCategory(urlCategory);
@@ -77,7 +74,9 @@ export default function BrowseRecipesPage() {
         setRecipes(data);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Something went wrong. Please try again later."
+          err instanceof Error
+            ? err.message
+            : "Something went wrong. Please try again later."
         );
         setRecipes([]);
       } finally {
@@ -87,8 +86,6 @@ export default function BrowseRecipesPage() {
 
     fetchRecipes();
   }, [searchParams]);
-
-
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -173,14 +170,14 @@ export default function BrowseRecipesPage() {
         )}
         {/* Error State */}
         {error && !loading && (
-          <div className="flex flex-col items-center py-16">
+          <div className="flex flex-col items-center py-16 ">
             <span className="text-4xl mb-4">😢</span>
             <span className="text-lg text-red-600">{error}</span>
           </div>
         )}
         {/* Empty State */}
         {!loading && !error && filteredRecipes.length === 0 && (
-          <div className="flex flex-col items-center py-16">
+          <div className="flex flex-col items-center py-16 ">
             <span className="text-4xl mb-4">🍽️</span>
             <span className="text-lg text-gray-600">
               No recipes found. Try a different search or category!
@@ -194,15 +191,15 @@ export default function BrowseRecipesPage() {
               <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
                 <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden h-full">
                   <div className="relative h-48 overflow-hidden">
-                   <Image
-  src={recipe.imageUrl?.trim() || "/placeholder.svg"} // Trim whitespace
-  alt={recipe.title}
-  width={400}
-  height={300}
-  className="object-cover group-hover:scale-105 transition-transform duration-300"
-  priority
-  unoptimized={process.env.NODE_ENV !== "production"}
-/>
+                    <Image
+                      src={recipe.imageUrl?.trim() || "/placeholder.svg"} // Trim whitespace
+                      alt={recipe.title}
+                      width={400}
+                      height={300}
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      priority
+                      unoptimized={process.env.NODE_ENV !== "production"}
+                    />
                   </div>
                   <CardContent className="p-4 flex-1 flex flex-col">
                     <div className="flex-1">
@@ -212,8 +209,10 @@ export default function BrowseRecipesPage() {
                     </div>
                     <div className="flex items-center justify-between text-sm text-gray-500 mt-2">
                       <Badge variant="outline" className="w-fit">
-                     {recipe.category?.name || "Uncategorized"}
-                     </Badge>
+                        {typeof recipe.category === "string"
+                          ? recipe.category
+                          : recipe.category?.name || "Uncategorized"}
+                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
