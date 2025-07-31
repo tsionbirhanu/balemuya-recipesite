@@ -13,10 +13,25 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface FeaturedRecipe {
+  id: string;
+  title: string;
+  imageUrl: string;
+  createdAt: string;
+  category: string;
+  averageRating: number;
+  description?: string;
+}
+
 export default function HomePage() {
   const [categories, setCategories] = useState<
     { id: number; name: string; imageUrl?: string }[]
   >([]);
+  const [featuredRecipes, setFeaturedRecipes] = useState<FeaturedRecipe[]>([]);
+  const [loading, setLoading] = useState({
+    categories: true,
+    featuredRecipes: true
+  });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
@@ -35,9 +50,33 @@ export default function HomePage() {
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategories([]);
+      } finally {
+        setLoading(prev => ({ ...prev, categories: false }));
       }
     };
+
+    const fetchFeaturedRecipes = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/featured_recipe`
+        );
+        if (!res.ok) throw new Error("Failed to fetch featured recipes");
+        
+        const data = await res.json();
+        setFeaturedRecipes(data.map((recipe: any) => ({
+          ...recipe,
+          description: recipe.description || "A delicious recipe from our community"
+        })));
+      } catch (error) {
+        console.error("Error fetching featured recipes:", error);
+        setFeaturedRecipes([]);
+      } finally {
+        setLoading(prev => ({ ...prev, featuredRecipes: false }));
+      }
+    };
+
     fetchCategories();
+    fetchFeaturedRecipes();
   }, []);
 
   const handleAddRecipeClick = () => {
@@ -48,37 +87,6 @@ export default function HomePage() {
     }
     router.push("/add-recipe");
   };
-
-  const featuredRecipes = [
-    {
-      title: "Pasta Primavera",
-      image: "/pasta.jpeg?height=250&width=400",
-      rating: 4.3,
-      description:
-        "A rich meat sauce served over spaghetti pasta — savory, saucy, and comforting.",
-    },
-    {
-      title: "Baklava",
-      image: "/dessert.jpeg?height=250&width=400",
-      rating: 4.9,
-      description:
-        "A rich, flaky pastry made with layers of filo dough, chopped nuts, and sweet honey syrup.",
-    },
-    {
-      title: "Sushi",
-      image: "/sushi.jpeg?height=250&width=400",
-      rating: 4.7,
-      description:
-        "Delicately rolled vinegared rice with fish, vegetables, and seaweed — elegant and healthy.",
-    },
-    {
-      title: "Traditional Doro Wat",
-      image: "/dorowot.jpeg?height=250&width=400",
-      rating: 4.8,
-      description:
-        "Ethiopia’s national dish a spicy chicken stew with berbere, onions, and hard-boiled eggs.",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
@@ -100,7 +108,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              className="bg-red-600 hover:bg-red-700 text-white rounded-full px-8 py-3 text-lg shadow-lg  hover:scale-105">
+              className="bg-red-600 hover:bg-red-700 text-white rounded-full px-8 py-3 text-lg shadow-lg hover:scale-105">
               <Link href="/recipes" className="flex items-center">
                 Browse Recipes
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -128,40 +136,19 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((category) => (
-         <Link 
-            key={category.id} 
-            href={{
-             pathname: '/recipes',
-              query: { category: category.name } // Use original case name
-            }}
-           passHref
-            >
-        <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
-        <div className="relative h-48 overflow-hidden">
-        <Image
-          src={category.imageUrl || `/category-images/${category.name.toLowerCase()}.jpg`}
-          alt={category.name}
-          width={400}
-          height={300}
-          className="object-cover"
-          priority
-          unoptimized={process.env.NODE_ENV !== 'production'}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute bottom-4 left-4 text-white">
-          <h3 className="text-xl font-bold">{category.name}</h3>
-        </div>
-      </div>
-    </Card>
-  </Link>
-))}
-          </div>
-        </div> */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {categories.length > 0
-              ? categories.map((category) => (
+            {loading.categories
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <Card key={index} className="border-0 overflow-hidden">
+                    <div className="relative h-48 overflow-hidden">
+                      <Skeleton className="h-full w-full rounded-none" />
+                    </div>
+                    <CardContent className="p-4">
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                    </CardContent>
+                  </Card>
+                ))
+              : categories.map((category) => (
                   <Link
                     key={category.id}
                     href={{
@@ -169,7 +156,7 @@ export default function HomePage() {
                       query: { category: category.name },
                     }}
                     passHref>
-                    <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden ">
+                    <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
                       <div className="relative h-48 overflow-hidden">
                         <Image
                           src={
@@ -190,17 +177,6 @@ export default function HomePage() {
                       </div>
                     </Card>
                   </Link>
-                ))
-              : // YouTube-style loading skeletons
-                Array.from({ length: 4 }).map((_, index) => (
-                  <Card key={index} className="border-0 overflow-hidden">
-                    <div className="relative h-48 overflow-hidden">
-                      <Skeleton className="h-full w-full rounded-none" />
-                    </div>
-                    <CardContent className="p-4">
-                      <Skeleton className="h-6 w-3/4 mb-2" />
-                    </CardContent>
-                  </Card>
                 ))}
           </div>
         </div>
@@ -213,37 +189,62 @@ export default function HomePage() {
               Featured Recipes
             </h2>
             <p className="text-lg text-gray-600">
-              Hand-picked favorites from our community - coming soon!
+              {loading.featuredRecipes
+                ? "Loading featured recipes..."
+                : featuredRecipes.length > 0
+                ? "Hand-picked favorites from our community"
+                : "No featured recipes available"}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredRecipes.map((recipe, index) => (
-              <Link key={recipe.title} href={`/recipes/${index + 1}`}>
-                <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
+            {loading.featuredRecipes ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <Card key={index} className="border-0 shadow-lg overflow-hidden">
                   <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={recipe.image || "/placeholder.svg"}
-                      alt={recipe.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <Badge className="absolute top-3 right-3 bg-red-600 hover:bg-red-700">
-                      <Star className="h-3 w-3 mr-1 fill-current" />
-                      {recipe.rating}
-                    </Badge>
+                    <Skeleton className="h-full w-full rounded-none" />
                   </div>
                   <CardContent className="p-4">
-                    <h3 className="font-bold text-lg mb-2 text-gray-800">
-                      {recipe.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-3">
-                      {recipe.description}
-                    </p>
-                    <div className="flex items-center justify-between text-sm text-gray-500"></div>
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-2/3" />
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
+              ))
+            ) : featuredRecipes.length > 0 ? (
+              featuredRecipes.map((recipe) => (
+                <Link key={recipe.id} href={`/recipes/${recipe.id}`}>
+                  <Card className="group cursor-pointer hover:shadow-lg border-0 shadow-lg overflow-hidden">
+                    <div className="relative h-48 overflow-hidden">
+                      <Image
+                        src={recipe.imageUrl || "/placeholder.svg"}
+                        alt={recipe.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <Badge className="absolute top-3 right-3 bg-red-600 hover:bg-red-700">
+                        <Star className="h-3 w-3 mr-1 fill-current" />
+                        {recipe.averageRating.toFixed(1)}
+                      </Badge>
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-lg mb-2 text-gray-800">
+                        {recipe.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-3">
+                        {recipe.description}
+                      </p>
+                      <div className="flex items-center justify-between text-sm text-gray-500">
+                        <span>{recipe.category}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))
+            ) : (
+              <div className="col-span-4 text-center py-12">
+                <p className="text-gray-500">No featured recipes available at this time</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
