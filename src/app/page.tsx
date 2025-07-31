@@ -63,6 +63,7 @@ export default function HomePage() {
         if (!res.ok) throw new Error("Failed to fetch featured recipes");
         
         const data = await res.json();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setFeaturedRecipes(data.map((recipe: any) => ({
           ...recipe,
           description: recipe.description || "A delicious recipe from our community"
