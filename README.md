@@ -1,90 +1,110 @@
-🍲 Balemuya – Ethiopian & Global Recipes, by Ethiopians 🇪🇹
+<h1 align="center">🍲 Balemuya – Ethiopian & Global Recipes, by Ethiopians 🇪🇹</h1>
 
- [![Website](https://img.shields.io/badge/Live%20Demo-Balemuya-green?style=flat-square&logo=vercel)](https://balemuya-recipesite.vercel.app/) [![Next.js](https://img.shields.io/badge/Built%20With-Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org) [![TypeScript](https://img.shields.io/badge/Code-TypeScript-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/) [![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-38b2ac?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
- 
-Balemuya is a modern, interactive recipe-sharing platform built by Ethiopians to celebrate both authentic Ethiopian cuisine and global dishes. Whether you're a local foodie or an explorer of world flavors, Balemuya is your go-to kitchen companion to cook, share, and enjoy.
+<p align="center">
+  <a href="https://balemuya-recipesite.vercel.app/">
+    <img alt="Live Demo" src="https://img.shields.io/badge/Live%20Demo-Balemuya-green?style=flat-square&logo=vercel" />
+  </a>
+  <a href="https://nextjs.org">
+    <img alt="Built With" src="https://img.shields.io/badge/Built%20With-Next.js-black?style=flat-square&logo=next.js" />
+  </a>
+  <a href="https://www.typescriptlang.org/">
+    <img alt="Code" src="https://img.shields.io/badge/Code-TypeScript-blue?style=flat-square&logo=typescript" />
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img alt="UI" src="https://img.shields.io/badge/UI-TailwindCSS-38b2ac?style=flat-square&logo=tailwind-css" />
+  </a>
+</p>
 
-👉 Live Demo »
+---
 
-✨ Key Features
-🔎 Search & filter delicious Ethiopian and international recipes
+> **Balemuya** is a modern, interactive recipe-sharing platform built by Ethiopians 🇪🇹 for the world 🌍 — combining authentic **Ethiopian cuisine** with **global flavors**. Share your passion for cooking, explore new recipes, and build your culinary community.
 
-🍛 Browse by category, difficulty & cooking time
+### 👉 [Live Demo](https://balemuya-recipesite.vercel.app/)
 
-📤 Share your own recipes with images, descriptions, and ingredients
+---
 
-❤️ Like, review, and save recipes to favorites
+## ✨ Features
 
-🔐 Secure JWT-auth login & registration
+- 🔎 **Smart Recipe Search**: Find your favorite recipes by keywords
+- 🍛 **Category Browsing**: Filter by meal types, difficulty, or cooking time
+- 📤 **User Submissions**: *Only logged-in users* can share their own recipes with full details
+- ❤️ **Favorites & Likes**: Like and save recipes you love
+- 🔐 **Secure Auth**: JWT-based login and registration system
+- 🧑‍💼 **Admin Dashboard**: Approve/reject user-submitted recipes
+- 📱 **Fully Responsive**: Seamless experience on mobile, tablet, and desktop
 
-🧑‍💼 Admin Dashboard for moderating user submissions
+---
 
-📱 Fully responsive across mobile, tablet, and desktop
+## 🧠 Tech Stack
 
-🧠 Tech Stack
-Tool	Purpose
-⚡ Next.js	Full-stack React framework
-🟦 TypeScript	Type-safe development
-🎨 TailwindCSS	Utility-first CSS styling
-🔐 JWT Auth	Secure login & token handling
-☁️ Vercel	Deployment & hosting
-🌐 REST API	Backend communication (external repo)
+| Tech        | Purpose                    |
+|-------------|----------------------------|
+| ⚡ **Next.js**     | Full-stack React framework     |
+| 🟦 **TypeScript** | Type-safe frontend development |
+| 🎨 **TailwindCSS** | Utility-first CSS styling       |
+| 🔐 **JWT Auth**    | Secure token-based authentication |
+| ☁️ **Vercel**      | Deployment & hosting            |
+| 🌐 **REST API**    | Backend API integration         |
 
-📁 Folder Structure
-ruby
-Copy
-Edit
+---
+
+## 📁 Folder Structure
+
 balemuya-recipesite/
-├── public/               # Static assets (images, icons)
+├── public/ # Static assets
 ├── src/
-│   ├── app/              # App Router (Next.js 13+ routing)
-│   ├── components/       # Reusable components
-│   ├── types/            # Global types
-│   └── lib/              # API utils, token helpers
-├── .env.local.example    # Example environment config
-├── tailwind.config.ts    # Tailwind configuration
-└── next.config.js        # Next.js configuration
-🚀 Getting Started
-To run the project locally:
+│ ├── app/ # App routing (Next.js 13+)
+│ ├── components/ # Reusable UI components
+│ ├── types/ # Global TypeScript types
+│ └── lib/ # Helpers: API, JWT, utils
+├── .env.local.example # Env variable sample
+├── tailwind.config.ts # TailwindCSS config
+└── next.config.js # Next.js config
 
-bash
+yaml
 Copy
 Edit
-# 1. Clone
+
+---
+
+## 🚀 Getting Started
+
+```bash
+# 1. Clone the repo
 git clone https://github.com/yourusername/balemuya-recipesite.git
 cd balemuya-recipesite
 
 # 2. Install dependencies
 npm install
 
-# 3. Setup environment
+# 3. Set up environment variables
 cp .env.local.example .env.local
-# Then update NEXT_PUBLIC_API_URL in the .env.local file
+# Fill in NEXT_PUBLIC_API_URL with your backend URL
 
-# 4. Start development server
+# 4. Start the dev server
 npm run dev
+Then visit: http://localhost:3000
+```
 
-# Visit:
-http://localhost:3000
 🤝 Contributing
-We ❤️ contributions! Got an idea or a fix?
+We ❤️ contributions from the community! Here's how to get involved:
 
 bash
 Copy
 Edit
-# Fork and branch
-git checkout -b feature/amazing-feature
+# Create a new feature branch
+git checkout -b feature/your-feature-name
 
-# Commit
-git commit -m 'Add amazing feature'
+# Make your changes and commit
+git commit -m "Add your awesome feature"
 
-# Push
-git push origin feature/amazing-feature
-Then, open a Pull Request 🚀
+# Push to your fork
+git push origin feature/your-feature-name
+Then open a Pull Request — we'll review and collaborate!
 
 📜 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+Licensed under the MIT License — see the LICENSE file for details.
 
 👩🏽‍💻 Made With Love
-Crafted by Tsion Birhanu
-Built in Ethiopia 🇪🇹, shared with the world 🌍
+Crafted by Tsion Birhanu 💻
+Proudly built in Ethiopia 🇪🇹, shared with the 🌍 world
