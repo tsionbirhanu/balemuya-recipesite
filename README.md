@@ -1,36 +1,115 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍲 **Balemuya** – The Taste of Ethiopia, Online 🇪🇹
 
-## Getting Started
+[![Website](https://img.shields.io/badge/Live%20Demo-Balemuya-green?style=flat-square&logo=vercel)](https://balemuya-recipesite.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Built%20With-Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/Code-TypeScript-blue?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-38b2ac?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
 
-First, run the development server:
+**Balemuya** is a modern and interactive recipe-sharing web application, built to showcase the depth and flavor of **Ethiopian cuisine**. Whether you're a local foodie or exploring African dishes for the first time, Balemuya invites you to **cook, share, and enjoy**.
+
+👉 [**Live Demo** »](https://balemuya-recipesite.vercel.app/)
+
+---
+
+## ✨ **Key Features**
+
+- 🔎 Search & filter delicious Ethiopian recipes
+- 🍛 Browse by category, difficulty & cooking time
+- 📤 Share your own recipes with a photo, description, and ingredients
+- ❤️ Like, review, and save recipes to favorites
+- 🔐 Secure **JWT-auth** login & registration
+- 🧑‍💼 **Admin Dashboard** for moderating user submissions
+- 📱 Fully responsive for mobile, tablet, and desktop
+
+---
+
+## 🧠 **Tech Stack**
+
+| Tool           | Purpose                                |
+| -------------- | --------------------------------------- |
+| ⚡ Next.js      | Full-stack React framework              |
+| 🟦 TypeScript   | Type-safe development                   |
+| 🎨 TailwindCSS | Utility-first CSS styling               |
+| 🔐 JWT Auth     | Secure login & token handling           |
+| ☁️ Vercel       | Deployment & hosting                    |
+| 🌐 REST API     | Backend communication (external repo)   |
+
+---
+
+## 🖼️ **Screenshots**
+
+> 🧑‍🍳 Home Page  
+> ![Home Page](https://i.imgur.com/YOUR_HOME_IMAGE.png)
+
+> 🍝 Recipe Detail Page  
+> ![Recipe Detail](https://i.imgur.com/YOUR_RECIPE_IMAGE.png)
+
+> 🛠️ Admin Panel  
+> ![Admin Panel](https://i.imgur.com/YOUR_ADMIN_IMAGE.png)
+
+---
+
+## 📁 **Folder Structure**
+
+balemuya-recipesite/
+├── public/ # Static assets (images, icons)
+├── src/
+│ ├── app/ # App Router (Next.js 13+ routing)
+│ ├── components/ # Reusable components
+│ ├── types/ # Global types
+│ └── lib/ # API utils, token helpers
+├── .env.local.example # Example environment config
+├── tailwind.config.ts # Tailwind configuration
+└── next.config.js # Next.js configuration
+
+yaml
+Copy
+Edit
+
+---
+
+## 🚀 **Getting Started**
+
+Clone & run locally:
 
 ```bash
+# 1. Clone
+git clone https://github.com/yourusername/balemuya-recipesite.git
+cd balemuya-recipesite
+
+# 2. Install deps
+npm install
+
+# 3. Create .env.local
+cp .env.local.example .env.local
+# Set your NEXT_PUBLIC_API_URL
+
+# 4. Run dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Visit: http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🤝 Contributing
+We ❤️ contributions! If you have ideas or want to improve Balemuya:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+bash
+Copy
+Edit
+# Fork the repository
+git checkout -b feature/amazing-feature
+git commit -m 'Add amazing feature'
+git push origin feature/amazing-feature
+Then, open a Pull Request 🚀
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+📜 License
+This project is licensed under the MIT License.
+See LICENSE for more.
 
-## Learn More
+👩🏽‍💻 Made With Love
+Crafted by:
 
-To learn more about Next.js, take a look at the following resources:
+Frontend: Tsion Birhanu
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Backend: Dagmawit
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built in Ethiopia 🇪🇹, for the world 🌍
